@@ -1,15 +1,7 @@
 {
-  "description": "USDT (Tether) converted to Toman (Iranian Toman), this extension is using tetherland.com currency api services.\n\n It is a fork of USD-Toman.",
-  "name": "USDT-Toman",
-  "shell-version": [
-    "45",
-    "46",
-    "47",
-    "48",
-    "49",
-    "50"
-  ],
-  "url": "https://github.com/Elyar0/USDT-Toman",
   "uuid": "usdt-toman@elyarranjbar.ir",
-  "version": 1
+  "name": "USDT-Toman",
+  "description": "Shows the USDT (Tether) price in Toman (Iranian Toman) in the top panel, with a 24h up/down indicator. Data comes from the tetherland.com currency API.\n\nIt is a fork of USD-Toman, which shows the USD rate instead.",
+  "shell-version": ["45", "46", "47", "48", "49", "50"],
+  "url": "https://github.com/Elyar0/USDT-Toman"
 }
