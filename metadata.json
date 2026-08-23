@@ -1,0 +1,15 @@
+{
+  "description": "USDT (Tether) converted to Toman (Iranian Toman), this extension is using tetherland.com currency api services.\n\n It is a fork of USD-Toman.",
+  "name": "USDT-Toman",
+  "shell-version": [
+    "45",
+    "46",
+    "47",
+    "48",
+    "49",
+    "50"
+  ],
+  "url": "https://github.com/Elyar0/USDT-Toman",
+  "uuid": "usdt-toman@elyarranjbar.ir",
+  "version": 1
+}
