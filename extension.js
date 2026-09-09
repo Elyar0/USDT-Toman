@@ -8,7 +8,7 @@ import GLib from 'gi://GLib';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 
-const API_URL = 'https://api.tetherland.com/currencies';
+const API_URL = 'https://currency.servicefather.ir/api/currencies/irt/usdt';
 const REFRESH_INTERVAL_SECONDS = 30;
 
 export default class UsdtTomanExtension extends Extension {
@@ -100,13 +100,13 @@ export default class UsdtTomanExtension extends Extension {
                 throw new Error(`HTTP ${message.get_status()}`);
 
             const response = new TextDecoder().decode(bytes.get_data());
-            const tether = JSON.parse(response)?.data?.currencies?.USDT ?? {};
+            const tether = JSON.parse(response)?.data ?? {};
 
-            const price = parseInt(tether.price ?? 0);
+            const price = parseInt(tether.rate ?? 0);
             const displayValue = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             this._panelButtonText.text = `1₮ = ${displayValue}T`;
 
-            const diff = parseFloat(tether.diff24d ?? 0);
+            const diff = parseFloat(tether.diff ?? 0);
             const isPriceIncreased = diff === 0 ? null : diff > 0;
 
             this._panelButtonIndicator.text = isPriceIncreased === null
