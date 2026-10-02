@@ -110,7 +110,7 @@ export default class UsdtTomanExtension extends Extension {
             const isPriceIncreased = diff === 0 ? null : diff > 0;
 
             this._panelButtonIndicator.text = isPriceIncreased === null
-                ? '' : (isPriceIncreased ? '🡱' : '🡳');
+                ? '' : (isPriceIncreased ? '↑' : '↓');
             this._panelButtonIndicator.style_class = isPriceIncreased
                 ? 'priceIncrease' : 'priceDecrease';
         } catch (error) {
