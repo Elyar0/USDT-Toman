@@ -11,6 +11,15 @@ import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 const API_URL = 'https://currency.servicefather.ir/api/currencies/irt/usdt';
 const REFRESH_INTERVAL_SECONDS = 30;
 
+// Prefer the nicer arrows; fall back when no installed font has the glyphs
+const FANCY_ARROWS = {up: '🡱', down: '🡳'};
+const BASIC_ARROWS = {up: '↑', down: '↓'};
+
+function pickArrows(actor) {
+    const layout = actor.create_pango_layout(FANCY_ARROWS.up + FANCY_ARROWS.down);
+    return layout.get_unknown_glyphs_count() === 0 ? FANCY_ARROWS : BASIC_ARROWS;
+}
+
 export default class UsdtTomanExtension extends Extension {
     enable() {
         this._session = new Soup.Session({timeout: 10});
@@ -38,6 +47,8 @@ export default class UsdtTomanExtension extends Extension {
 
         this._panelButtonText.get_clutter_text().set_line_alignment(0);
         this._panelButtonIndicator.get_clutter_text().set_line_alignment(0);
+
+        this._arrows = pickArrows(this._panelButtonIndicator.get_clutter_text());
 
         Main.panel._centerBox.insert_child_at_index(this._panelBox, 0);
 
@@ -68,6 +79,8 @@ export default class UsdtTomanExtension extends Extension {
             this._session.abort();
             this._session = null;
         }
+
+        this._arrows = null;
 
         this._panelButtonIndicator?.destroy();
         this._panelButtonIndicator = null;
@@ -110,7 +123,7 @@ export default class UsdtTomanExtension extends Extension {
             const isPriceIncreased = diff === 0 ? null : diff > 0;
 
             this._panelButtonIndicator.text = isPriceIncreased === null
-                ? '' : (isPriceIncreased ? '↑' : '↓');
+                ? '' : (isPriceIncreased ? this._arrows.up : this._arrows.down);
             this._panelButtonIndicator.style_class = isPriceIncreased
                 ? 'priceIncrease' : 'priceDecrease';
         } catch (error) {
