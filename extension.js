@@ -20,6 +20,21 @@ function pickArrows(actor) {
     return layout.get_unknown_glyphs_count() === 0 ? FANCY_ARROWS : BASIC_ARROWS;
 }
 
+// Fonts put glyphs at different heights inside their line box, so shift the
+// label until the visible glyphs (ink), not the line box, sit on the center
+function centerInk(label) {
+    const [ink, logical] = label.get_clutter_text().get_layout().get_pixel_extents();
+    const offset = (ink.y + ink.height / 2) - (logical.y + logical.height / 2);
+    label.translation_y = ink.height > 0 ? -Math.round(offset) : 0;
+}
+
+function newCenteredLabel(params) {
+    const label = new St.Label({y_align: Clutter.ActorAlign.CENTER, ...params});
+    // Re-measure once the theme font is applied
+    label.connect_after('style-changed', () => centerInk(label));
+    return label;
+}
+
 export default class UsdtTomanExtension extends Extension {
     enable() {
         this._session = new Soup.Session({timeout: 10});
@@ -30,17 +45,15 @@ export default class UsdtTomanExtension extends Extension {
             y_expand: true,
         });
 
-        this._panelButtonText = new St.Label({
+        this._panelButtonText = newCenteredLabel({
             style_class: 'cPanelText',
             text: '1₮ = — T',
-            y_align: Clutter.ActorAlign.CENTER,
             style: 'line-height: 1; font-size: 14px;',
         });
         this._panelBox.add_child(this._panelButtonText);
 
-        this._panelButtonIndicator = new St.Label({
+        this._panelButtonIndicator = newCenteredLabel({
             text: '',
-            y_align: Clutter.ActorAlign.CENTER,
             style: 'line-height: 1; font-size: 12px;',
         });
         this._panelBox.add_child(this._panelButtonIndicator);
@@ -126,6 +139,9 @@ export default class UsdtTomanExtension extends Extension {
                 ? '' : (isPriceIncreased ? this._arrows.up : this._arrows.down);
             this._panelButtonIndicator.style_class = isPriceIncreased
                 ? 'priceIncrease' : 'priceDecrease';
+
+            centerInk(this._panelButtonText);
+            centerInk(this._panelButtonIndicator);
         } catch (error) {
             if (error.matches?.(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
                 return;
@@ -135,6 +151,7 @@ export default class UsdtTomanExtension extends Extension {
             if (this._panelButtonText) {
                 this._panelButtonText.text = '1₮ = — T';
                 this._panelButtonIndicator.text = '';
+                centerInk(this._panelButtonText);
             }
         }
     }
