@@ -31,6 +31,12 @@ export default class UsdtTomanExtension extends Extension {
         this._session = new Soup.Session({timeout: 10});
         this._cancellable = new Gio.Cancellable();
 
+        const iconsDir = this.dir.get_child('icons');
+        this._trendIcons = {
+            up: new Gio.FileIcon({file: iconsDir.get_child('trend-up-symbolic.svg')}),
+            down: new Gio.FileIcon({file: iconsDir.get_child('trend-down-symbolic.svg')}),
+        };
+
         this._panelBox = new St.BoxLayout({
             style_class: 'panel-button',
             y_expand: true,
@@ -81,6 +87,8 @@ export default class UsdtTomanExtension extends Extension {
             this._session = null;
         }
 
+        this._trendIcons = null;
+
         this._panelButtonIndicator?.destroy();
         this._panelButtonIndicator = null;
 
@@ -123,8 +131,8 @@ export default class UsdtTomanExtension extends Extension {
 
             this._panelButtonIndicator.visible = isPriceIncreased !== null;
             if (isPriceIncreased !== null) {
-                this._panelButtonIndicator.icon_name = isPriceIncreased
-                    ? 'go-up-symbolic' : 'go-down-symbolic';
+                this._panelButtonIndicator.gicon = isPriceIncreased
+                    ? this._trendIcons.up : this._trendIcons.down;
                 this._panelButtonIndicator.style_class = isPriceIncreased
                     ? 'priceIncrease' : 'priceDecrease';
             }
